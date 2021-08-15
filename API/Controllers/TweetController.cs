@@ -8,6 +8,7 @@ using API.Services;
 using API.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
+using API.Models.Forms;
 
 
 
@@ -32,7 +33,7 @@ namespace API.Controllers
         [HttpGet]
         [Authorize]
         [Route("{id}")]
-        public async Task<IActionResult> getOne(Guid id)
+        public async Task<IActionResult> getOne([FromBody] Guid id)
         {
             try
             {
@@ -64,38 +65,34 @@ namespace API.Controllers
         [HttpPost]
         [Authorize]
         [Route("new")]
-        public async Task<IActionResult> create(
-            string body,
-            IFormFile img,
-            string uid
-        )
+        public async Task<IActionResult> create([FromForm] TweetCreateForm form)
         {
             try
             {
 
-                return Ok(await _service.create(body, img, uid));
+                return Ok(await _service.create(form.body, form.img, form.uid));
             }
             catch (System.Exception)
             {
 
-                // return Problem("ERROR");
-                throw;
+                return Problem("ERROR");
+                // throw;
             }
         }
 
         [HttpPost]
         [Authorize]
         [Route("new/tag")]
-        public async Task<IActionResult> addTag(string tag_str, Guid tid)
+        public async Task<IActionResult> addTag([FromBody] AddTagForm form)
         {
             try
             {
                 List<string> tags = new List<string>();
-                foreach (var item in tag_str.Split(','))
+                foreach (var item in form.tag_str.Split(','))
                 {
                     tags.Add(item);
                 }
-                return Ok(await _service.addTags(tags, tid));
+                return Ok(await _service.addTags(tags, form.tid));
             }
             catch (System.Exception)
             {

@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using API.Models;
 using API.Services;
 using System.Threading.Tasks;
-
+using API.Models.Forms;
 
 namespace API.Controllers
 {
+
     [ApiController]
     [Route("auth")]
     public class AuthController : ControllerBase
@@ -34,11 +35,11 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("signin")]
-        public async Task<IActionResult> signin(string email, string passowrd)
+        public async Task<IActionResult> signin([FromBody] SignInForm form)
         {
             try
             {
-                return Ok(await _service.signIn(email, passowrd));
+                return Ok(await _service.signIn(form.email, form.password));
             }
             catch (System.Exception)
             {
@@ -52,11 +53,11 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("signup")]
-        public async Task<IActionResult> signup(string email, string password, string first_name, string last_name, string confirm_pass)
+        public async Task<IActionResult> signup([FromBody] SignUpForm form)
         {
             try
             {
-                return Ok(await _service.signUp(email, password, confirm_pass, first_name, last_name));
+                return Ok(await _service.signUp(form.email, form.password, form.confirm_pass, form.first_name, form.last_name));
             }
             catch (System.Exception)
             {
@@ -94,12 +95,12 @@ namespace API.Controllers
         [HttpPost]
         [Route("add/dp")]
         [Authorize]
-        public async Task<IActionResult> addDp(IFormFile file)
+        public async Task<IActionResult> addDp([FromForm] DpUpload form)
         {
             try
             {
                 ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
-                return Ok(await _service.addDp(file, user.Email));
+                return Ok(await _service.addDp(form.file, user.Email));
             }
             catch (System.Exception)
             {
@@ -111,12 +112,12 @@ namespace API.Controllers
         [HttpPost]
         [Route("add/banner")]
         [Authorize]
-        public async Task<IActionResult> addbanner(IFormFile file)
+        public async Task<IActionResult> addbanner([FromForm] BannerUpload form)
         {
             try
             {
                 ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
-                return Ok(await _service.addBanner(file, user.Email));
+                return Ok(await _service.addBanner(form.file, user.Email));
             }
             catch (System.Exception)
             {
@@ -128,11 +129,11 @@ namespace API.Controllers
         [HttpPost]
         [Route("follow")]
         [Authorize]
-        public async Task<IActionResult> follow(string user_email, string follower_email)
+        public async Task<IActionResult> follow([FromBody] FollowForm form)
         {
             try
             {
-                return Ok(await _service.follow(user_email, follower_email));
+                return Ok(await _service.follow(form.user_email, form.follower_email));
             }
             catch (System.Exception)
             {
@@ -162,7 +163,7 @@ namespace API.Controllers
         [HttpGet]
         [Route("get/user")]
         [Authorize]
-        public async Task<IActionResult> getUser(string email)
+        public async Task<IActionResult> getUser([FromBody]string email)
         {
             try
             {
