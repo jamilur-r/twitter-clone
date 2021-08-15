@@ -1,11 +1,17 @@
 import React from "react";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import SignInPage from "../pages/SignInPage";
+import Navbar from "../widgets/Navbar";
 
 const Router = () => {
+
   return (
     <BrowserRouter>
-      <div>nav</div>
-      <Switch></Switch>
+      <Navbar />
+      <Switch>
+        <Route path="/signin" component={SignInPage} exact/>
+        <Route path="/signup" component={SignInPage} exact/>
+      </Switch>
     </BrowserRouter>
   );
 };
